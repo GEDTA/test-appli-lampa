@@ -1,12 +1,15 @@
 import { createLayerComponent } from '@react-leaflet/core';
 import type { LeafletContextInterface } from '@react-leaflet/core';
-import L, { MarkerClusterGroupOptions } from 'leaflet';
+import type { ReactNode } from 'react';
+import L from 'leaflet';
+import type { MarkerClusterGroupOptions } from 'leaflet';
 import 'leaflet.markercluster';
 
 export type MarkerClusterProps = MarkerClusterGroupOptions & {
   iconCreateFunction?: (cluster: any) => L.DivIcon;
   chunkedLoading?: boolean;
   showCoverageOnHover?: boolean;
+  children?: ReactNode;
 };
 
 const createMarkerClusterGroup = (props: MarkerClusterProps, context: LeafletContextInterface) => {

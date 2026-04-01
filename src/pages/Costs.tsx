@@ -41,9 +41,10 @@ import { calcLedSavingsPerYear } from '@/utils/energy';
 const YEARS = ['2021', '2022', '2023', '2024', '2025', '2026'];
 const TYPES = Object.keys(INTERVENTION_TYPE_LABELS) as InterventionType[];
 
-// Bar colors: highlighted year vs others
+// Bar colors: highlighted year vs others vs partial
 const BAR_COLOR_ACTIVE = '#3b82f6';
 const BAR_COLOR_MUTED = '#94a3b8';
+const BAR_COLOR_PARTIAL = '#f59e0b';
 
 const fmt = (n: number) =>
   new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(n);
@@ -221,13 +222,17 @@ export const Costs = () => {
                   {chartData.map((entry) => (
                     <Cell
                       key={entry.year}
-                      fill={entry.year === '2025' ? BAR_COLOR_ACTIVE : BAR_COLOR_MUTED}
+                      fill={entry.year === '2026' ? BAR_COLOR_PARTIAL : entry.year === '2025' ? BAR_COLOR_ACTIVE : BAR_COLOR_MUTED}
                     />
                   ))}
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
           </ChartContainer>
+          <div className="flex items-center gap-2 mt-2 text-xs text-muted-foreground">
+            <span className="inline-block w-3 h-3 rounded-sm" style={{ background: BAR_COLOR_PARTIAL }} />
+            2026 — données partielles (jan. – mars)
+          </div>
         </CardContent>
       </Card>
 

@@ -50,8 +50,10 @@ export const generateLampPosts = (count = 140): LampPost[] => {
       id: `LP-${String(index + 1).padStart(4, '0')}`,
       label: `Lampadaire ${index + 1}`,
       street,
-      lat: CENTER.lat + jitterLat,
-      lng: CENTER.lng + jitterLng,
+      // Plancher lat/lng pour éviter les zones d'eau (Ill, canaux)
+      // LP-0140 (lat≈48.658, lng≈7.828) sert de référence de limite basse
+      lat: Math.max(CENTER.lat + jitterLat, 48.6565),
+      lng: Math.max(CENTER.lng + jitterLng, 7.828),
       status,
       lastUpdated: new Date(Date.now() - random() * 1000 * 60 * 60 * 24 * 40).toISOString(),
     };

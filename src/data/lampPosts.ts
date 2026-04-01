@@ -1,20 +1,21 @@
 import type { LampPost, LampStatus } from '@/types/lamp.types';
 
-const CENTER = { lat: 48.5867, lng: 7.6682 };
+const CENTER = { lat: 48.6579, lng: 7.8307 };
 
+// Rues réelles ou plausibles de La Wantzenau
 const STREETS = [
   'Rue Principale',
-  'Rue de la Gare',
-  'Rue des Vignes',
-  'Rue des Tilleuls',
+  'Route de Strasbourg',
+  'Rue du Rhin',
+  'Rue de l\'Ill',
   'Rue de l\'Église',
+  'Rue des Pêcheurs',
+  'Rue du Port',
   'Rue du Moulin',
   'Rue des Jardins',
-  'Rue du Château',
-  'Rue de la Forêt',
-  'Rue des Champs',
+  'Rue des Roses',
   'Rue des Écoles',
-  'Rue du Canal',
+  'Impasse du Verger',
 ];
 
 const pickStatus = (seed: number): LampStatus => {
@@ -38,8 +39,10 @@ export const generateLampPosts = (count = 140): LampPost[] => {
   const random = mulberry32(4281);
 
   return Array.from({ length: count }, (_, index) => {
-    const jitterLat = (random() - 0.5) * 0.018;
-    const jitterLng = (random() - 0.5) * 0.028;
+    // Dispersion ≈ ±500 m dans les deux axes (zone bâtie du village).
+    // À lat 48.66° : 1° lat ≈ 111 km, 1° lng ≈ 73 km — ratio compensé.
+    const jitterLat = (random() - 0.5) * 0.009;  // ±0.0045° ≈ ±500 m
+    const jitterLng = (random() - 0.5) * 0.014;  // ±0.007°  ≈ ±510 m
     const street = STREETS[Math.floor(random() * STREETS.length)];
     const status = pickStatus(Math.floor(random() * 1000) + index);
 

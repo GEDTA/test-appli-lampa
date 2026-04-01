@@ -84,19 +84,20 @@ const generateInterventions = (): Intervention[] => {
   const random = mulberry32(1337);
   const result: Intervention[] = [];
 
-  // Count per year — calibrated so 2024 ≈ 3 240 €
+  // Count per year — calibrated so 2025 ≈ 3 480 €
   const yearConfig: Array<[number, number]> = [
     [2021, 40],
     [2022, 46],
     [2023, 53],
     [2024, 60],
-    [2025, 22], // données partielles (jusqu'en mars)
+    [2025, 64],
+    [2026, 24], // données partielles (jusqu'en mars)
   ];
 
   let idx = 0;
   for (const [year, count] of yearConfig) {
-    // For 2025, limit days to ~81 (Jan+Feb+Mar)
-    const maxDayOfYear = year === 2025 ? 81 : 365;
+    // For 2026, limit days to ~90 (Jan+Feb+Mar)
+    const maxDayOfYear = year === 2026 ? 90 : 365;
 
     for (let i = 0; i < count; i++) {
       const type = TYPES[Math.floor(random() * TYPES.length)];

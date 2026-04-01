@@ -57,9 +57,9 @@ export const Costs = () => {
   const [showLedDetail, setShowLedDetail] = useState(false);
 
   // --- Bloc 1: summary stats ---
-  const totalCost2024 = useMemo(
+  const totalCost2025 = useMemo(
     () =>
-      INTERVENTIONS.filter((i) => i.date.startsWith('2024')).reduce(
+      INTERVENTIONS.filter((i) => i.date.startsWith('2025')).reduce(
         (sum, i) => sum + i.cost,
         0
       ),
@@ -145,7 +145,7 @@ export const Costs = () => {
       <div>
         <h1 className="text-4xl font-semibold tracking-tight">Coûts de maintenance</h1>
         <p className="text-muted-foreground mt-2 max-w-2xl">
-          Suivi budgétaire des interventions sur le parc lumineux de La Wantzenau (2021 – 2025).
+          Suivi budgétaire des interventions sur le parc lumineux de La Wantzenau (2021 – 2026).
         </p>
       </div>
 
@@ -157,8 +157,8 @@ export const Costs = () => {
             <Euro className="h-4 w-4 text-blue-600" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-semibold">{fmt(totalCost2024)}</div>
-            <p className="text-xs text-muted-foreground">Total des interventions en 2024</p>
+            <div className="text-2xl font-semibold">{fmt(totalCost2025)}</div>
+            <p className="text-xs text-muted-foreground">Total des interventions en 2025</p>
           </CardContent>
         </Card>
 
@@ -200,7 +200,7 @@ export const Costs = () => {
       <Card className="border-0 shadow-sm">
         <CardHeader>
           <CardTitle>Dépenses par année</CardTitle>
-          <CardDescription>Total des coûts d'intervention annuels (2025 = données partielles)</CardDescription>
+          <CardDescription>Total des coûts d'intervention annuels (2026 = données partielles)</CardDescription>
         </CardHeader>
         <CardContent>
           <ChartContainer config={{}} className="h-[280px]">
@@ -221,7 +221,7 @@ export const Costs = () => {
                   {chartData.map((entry) => (
                     <Cell
                       key={entry.year}
-                      fill={entry.year === '2024' ? BAR_COLOR_ACTIVE : BAR_COLOR_MUTED}
+                      fill={entry.year === '2025' ? BAR_COLOR_ACTIVE : BAR_COLOR_MUTED}
                     />
                   ))}
                 </Bar>

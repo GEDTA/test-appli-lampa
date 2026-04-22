@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, List, BarChart3, Settings, Menu, X, Moon, Sun, Euro, Leaf, LogOut } from 'lucide-react';
+import { LayoutDashboard, List, BarChart3, Settings, Menu, X, Moon, Sun, Euro, Leaf, LogOut, Bell, Zap, Wrench, FileText, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useTheme } from '@/hooks/useTheme';
 import { useLampPosts } from '@/context/LampContext';
 import { useAuth } from '@/context/AuthContext';
+import { useSignalements } from '@/context/SignalementContext';
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -18,6 +19,8 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
   const { theme, toggleTheme } = useTheme();
   const { lampPosts } = useLampPosts();
   const { user, logout } = useAuth();
+  const { signalements } = useSignalements();
+  const nouveauxCount = signalements.filter((s) => s.status === 'nouveau').length;
 
   const ledRate = lampPosts.length > 0
     ? Math.round((lampPosts.filter((l) => l.status === 'led').length / lampPosts.length) * 100)
@@ -29,11 +32,20 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
   const scoreColor = scoreVert >= 80 ? 'text-emerald-600' : scoreVert >= 60 ? 'text-amber-500' : 'text-rose-600';
 
   const navigation = [
-    { name: 'Tableau de bord', href: '/', icon: BarChart3 },
-    { name: 'Carte', href: '/carte', icon: LayoutDashboard },
-    { name: 'Inventaire', href: '/inventory', icon: List },
-    { name: 'Coûts & Budget', href: '/couts', icon: Euro },
-    { name: 'Paramètres', href: '/settings', icon: Settings },
+    { group: 'Exploitation' },
+    { name: 'Tableau de bord',  href: '/',              icon: BarChart3 },
+    { name: 'Carte',            href: '/carte',         icon: LayoutDashboard },
+    { name: 'Inventaire',       href: '/inventory',     icon: List },
+    { name: 'Signalements',     href: '/signalements',  icon: Bell, badge: nouveauxCount > 0 ? nouveauxCount : undefined },
+    { group: 'Analyses' },
+    { name: 'Énergie & LED',    href: '/energie',       icon: Zap },
+    { name: 'Coûts & Budget',   href: '/couts',         icon: Euro },
+    { name: 'Prestataires',     href: '/prestataires',  icon: Wrench },
+    { group: 'Gouvernance' },
+    { name: 'Rapport annuel',   href: '/rapport',       icon: FileText },
+    { name: 'Conseil municipal',href: '/conseil',       icon: Users },
+    { group: '' },
+    { name: 'Paramètres',       href: '/settings',      icon: Settings },
   ];
 
   const isActive = (path: string) => location.pathname === path;
@@ -100,7 +112,13 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
         >
           <div className={cn("w-64 h-full flex flex-col", !sidebarOpen && "invisible")}>
             <nav className="space-y-1 p-4 flex-1">
-              {navigation.map((item) => {
+              {navigation.map((item, idx) => {
+                if ('group' in item) {
+                  return item.group
+                    ? <p key={`g-${idx}`} className="px-3 pt-4 pb-1 text-xs font-semibold uppercase tracking-wider text-muted-foreground/60 first:pt-0">{item.group}</p>
+                    : <div key={`sep-${idx}`} className="my-2 border-t" />;
+                }
+
                 const Icon = item.icon;
                 const active = isActive(item.href);
 
@@ -117,7 +135,12 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
                   >
                     <Icon className="h-5 w-5" />
                     <span>{item.name}</span>
-                    {active && (
+                    {'badge' in item && item.badge !== undefined && (
+                      <span className="ml-auto rounded-full bg-rose-600 text-white text-xs font-bold px-1.5 py-0 min-w-[18px] text-center">
+                        {item.badge}
+                      </span>
+                    )}
+                    {active && !('badge' in item && item.badge !== undefined) && (
                       <div className="ml-auto w-1.5 h-6 rounded-full bg-primary-foreground"></div>
                     )}
                   </Link>

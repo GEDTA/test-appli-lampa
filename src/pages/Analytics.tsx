@@ -170,11 +170,11 @@ export const Analytics = () => {
               <div className="text-2xl font-semibold">{stats.classic}</div>
               <div className="mt-2">
                 <ProgressBar
-                  value={(stats.classic / stats.total) * 100}
+                  value={(stats.total > 0 ? (stats.classic / stats.total) * 100 : 0)}
                   color="bg-lime-500"
                 />
               </div>
-              <p className="text-xs text-muted-foreground mt-1">{((stats.classic / stats.total) * 100).toFixed(0)}% du parc — en transition</p>
+              <p className="text-xs text-muted-foreground mt-1">{((stats.total > 0 ? (stats.classic / stats.total) * 100 : 0)).toFixed(0)}% du parc — en transition</p>
             </CardContent>
           </Card>
 
@@ -187,12 +187,12 @@ export const Analytics = () => {
               <div className="text-2xl font-semibold">{stats.out}</div>
               <div className="mt-2">
                 <ProgressBar
-                  value={(stats.out / stats.total) * 100}
+                  value={(stats.total > 0 ? (stats.out / stats.total) * 100 : 0)}
                   color="bg-rose-500"
                 />
               </div>
               <p className="text-xs text-muted-foreground mt-1">
-                {((stats.out / stats.total) * 100).toFixed(0)}% — taux d'anomalie réseau
+                {((stats.total > 0 ? (stats.out / stats.total) * 100 : 0)).toFixed(0)}% — taux d'anomalie réseau
               </p>
             </CardContent>
           </Card>

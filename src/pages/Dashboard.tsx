@@ -112,7 +112,7 @@ export const Dashboard = () => {
           <CardContent>
             <div className="text-3xl font-semibold">{stats.classic}</div>
             <div className="mt-2">
-              <ProgressBar value={(stats.classic / stats.total) * 100} color="bg-lime-500" />
+              <ProgressBar value={(stats.total > 0 ? (stats.classic / stats.total) * 100 : 0)} color="bg-lime-500" />
             </div>
             <p className="text-xs text-muted-foreground mt-1">En transition vers LED</p>
           </CardContent>
@@ -126,7 +126,7 @@ export const Dashboard = () => {
           <CardContent>
             <div className="text-3xl font-semibold">{stats.out}</div>
             <div className="mt-2">
-              <ProgressBar value={(stats.out / stats.total) * 100} color="bg-rose-500" />
+              <ProgressBar value={(stats.total > 0 ? (stats.out / stats.total) * 100 : 0)} color="bg-rose-500" />
             </div>
             <p className="text-xs text-muted-foreground mt-1">Interventions requises</p>
           </CardContent>

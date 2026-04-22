@@ -34,10 +34,20 @@ interface SettingsContextValue {
 
 const SettingsContext = createContext<SettingsContextValue | null>(null);
 
+const SETTINGS_KEYS = Object.keys(DEFAULT_SETTINGS) as (keyof AppSettings)[];
+
 const loadFromStorage = (): AppSettings => {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    return raw ? { ...DEFAULT_SETTINGS, ...(JSON.parse(raw) as Partial<AppSettings>) } : DEFAULT_SETTINGS;
+    if (!raw) return DEFAULT_SETTINGS;
+    const parsed = JSON.parse(raw) as Record<string, unknown>;
+    const safe: Partial<AppSettings> = {};
+    for (const key of SETTINGS_KEYS) {
+      if (key in parsed && typeof parsed[key] === typeof DEFAULT_SETTINGS[key]) {
+        (safe as Record<string, unknown>)[key] = parsed[key];
+      }
+    }
+    return { ...DEFAULT_SETTINGS, ...safe };
   } catch {
     return DEFAULT_SETTINGS;
   }

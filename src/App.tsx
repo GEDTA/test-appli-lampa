@@ -6,11 +6,17 @@ import { Inventory } from './pages/Inventory';
 import { Analytics } from './pages/Analytics';
 import { Costs } from './pages/Costs';
 import { Settings } from './pages/Settings';
+import { Signalements } from './pages/Signalements';
+import { Energie } from './pages/Energie';
+import { Prestataires } from './pages/Prestataires';
+import { Rapport } from './pages/Rapport';
+import { Conseil } from './pages/Conseil';
 import { Login } from './pages/Login';
 import { Toaster } from './components/ui/sonner';
 import { LampProvider } from './context/LampContext';
 import { AuthProvider } from './context/AuthContext';
 import { SettingsProvider } from './context/SettingsContext';
+import { SignalementProvider } from './context/SignalementContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 
 const queryClient = new QueryClient({
@@ -36,6 +42,7 @@ function App() {
                 <ProtectedRoute>
                   <SettingsProvider>
                   <LampProvider>
+                  <SignalementProvider>
                     <AppLayout>
                       <Routes>
                         <Route path="/" element={<Analytics />} />
@@ -43,9 +50,15 @@ function App() {
                         <Route path="/inventory" element={<Inventory />} />
                         <Route path="/analytics" element={<Analytics />} />
                         <Route path="/couts" element={<Costs />} />
+                        <Route path="/signalements" element={<Signalements />} />
+                        <Route path="/energie" element={<Energie />} />
+                        <Route path="/prestataires" element={<Prestataires />} />
+                        <Route path="/rapport" element={<Rapport />} />
+                        <Route path="/conseil" element={<Conseil />} />
                         <Route path="/settings" element={<Settings />} />
                       </Routes>
                     </AppLayout>
+                  </SignalementProvider>
                   </LampProvider>
                   </SettingsProvider>
                 </ProtectedRoute>

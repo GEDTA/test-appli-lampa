@@ -1,4 +1,5 @@
 import { createContext, useCallback, useContext, useMemo, useState } from 'react';
+import { AUTH_STORAGE_KEY } from '@/api/axios.client';
 
 // TODO: Remplacer par un vrai appel API lors de l'intégration backend
 const DEMO_USER = {
@@ -30,7 +31,7 @@ interface AuthContextValue {
   logout: () => void;
 }
 
-const STORAGE_KEY = 'lampadaire_auth';
+const STORAGE_KEY = AUTH_STORAGE_KEY;
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 

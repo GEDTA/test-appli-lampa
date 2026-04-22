@@ -100,10 +100,10 @@ export const Inventory = () => {
           </div>
           <p className="text-2xl font-semibold text-emerald-700 dark:text-emerald-400">{summary.led}</p>
           <div className="mt-2">
-            <ProgressBar value={(summary.led / summary.total) * 100} color="bg-emerald-500" />
+            <ProgressBar value={(summary.total > 0 ? (summary.led / summary.total) * 100 : 0)} color="bg-emerald-500" />
           </div>
           <p className="text-xs text-muted-foreground mt-1">
-            {((summary.led / summary.total) * 100).toFixed(0)}% du parc — basse consommation
+            {((summary.total > 0 ? (summary.led / summary.total) * 100 : 0)).toFixed(0)}% du parc — basse consommation
           </p>
         </button>
 
@@ -122,10 +122,10 @@ export const Inventory = () => {
           </div>
           <p className="text-2xl font-semibold text-lime-700 dark:text-lime-400">{summary.classic}</p>
           <div className="mt-2">
-            <ProgressBar value={(summary.classic / summary.total) * 100} color="bg-lime-500" />
+            <ProgressBar value={(summary.total > 0 ? (summary.classic / summary.total) * 100 : 0)} color="bg-lime-500" />
           </div>
           <p className="text-xs text-muted-foreground mt-1">
-            {((summary.classic / summary.total) * 100).toFixed(0)}% du parc — en transition
+            {((summary.total > 0 ? (summary.classic / summary.total) * 100 : 0)).toFixed(0)}% du parc — en transition
           </p>
         </button>
 
@@ -144,10 +144,10 @@ export const Inventory = () => {
           </div>
           <p className="text-2xl font-semibold text-rose-700 dark:text-rose-400">{summary.out}</p>
           <div className="mt-2">
-            <ProgressBar value={(summary.out / summary.total) * 100} color="bg-rose-500" />
+            <ProgressBar value={(summary.total > 0 ? (summary.out / summary.total) * 100 : 0)} color="bg-rose-500" />
           </div>
           <p className="text-xs text-muted-foreground mt-1">
-            {((summary.out / summary.total) * 100).toFixed(0)}% — taux d'anomalie
+            {((summary.total > 0 ? (summary.out / summary.total) * 100 : 0)).toFixed(0)}% — taux d'anomalie
           </p>
         </button>
       </div>

@@ -18,14 +18,15 @@ import {
 } from '@/components/ui/dialog';
 import { ChartContainer } from '@/components/ui/chart';
 import {
-  BarChart,
-  Bar,
+  LineChart,
+  Line,
   XAxis,
   YAxis,
   CartesianGrid,
   ResponsiveContainer,
   Tooltip,
-  Cell,
+  ReferenceLine,
+  Dot,
 } from 'recharts';
 import { Euro, TrendingDown, Wrench, Download, Info, Zap } from 'lucide-react';
 import {
@@ -43,7 +44,6 @@ const TYPES = Object.keys(INTERVENTION_TYPE_LABELS) as InterventionType[];
 
 // Bar colors: highlighted year vs others vs partial
 const BAR_COLOR_ACTIVE = '#3b82f6';
-const BAR_COLOR_MUTED = '#94a3b8';
 const BAR_COLOR_PARTIAL = '#f59e0b';
 
 const fmt = (n: number) =>
@@ -113,17 +113,28 @@ export const Costs = () => {
   );
 
   // --- CSV export ---
+  const csvSafe = (value: string | number): string => {
+    const str = String(value);
+    if (/^[=+\-@\t\r\n]/.test(str)) {
+      return `"'${str.replace(/"/g, '""')}"`;
+    }
+    if (str.includes(';') || str.includes('"') || str.includes('\n')) {
+      return `"${str.replace(/"/g, '""')}"`;
+    }
+    return str;
+  };
+
   const exportCSV = () => {
     const headers = ['ID', 'Date', 'Type', 'Coût (€)', 'Lampadaire', 'Rue', 'Prestataire', 'Commentaire'];
     const rows = filtered.map((i) => [
-      i.id,
-      i.date,
-      INTERVENTION_TYPE_LABELS[i.type],
-      i.cost,
-      i.lampId,
-      i.street,
-      i.provider,
-      `"${i.comment}"`,
+      csvSafe(i.id),
+      csvSafe(i.date),
+      csvSafe(INTERVENTION_TYPE_LABELS[i.type]),
+      csvSafe(i.cost),
+      csvSafe(i.lampId),
+      csvSafe(i.street),
+      csvSafe(i.provider),
+      csvSafe(i.comment),
     ]);
     const csv = [headers, ...rows].map((r) => r.join(';')).join('\n');
     const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
@@ -200,13 +211,13 @@ export const Costs = () => {
       {/* ── Bloc 2 : graphique annuel ── */}
       <Card className="border-0 shadow-sm">
         <CardHeader>
-          <CardTitle>Dépenses par année</CardTitle>
-          <CardDescription>Total des coûts d'intervention annuels (2026 = données partielles)</CardDescription>
+          <CardTitle>Évolution des dépenses</CardTitle>
+          <CardDescription>Tendance des coûts d'intervention annuels (2026 = données partielles jan.–mars)</CardDescription>
         </CardHeader>
         <CardContent>
           <ChartContainer config={{}} className="h-[280px]">
             <ResponsiveContainer width="100%" height="100%">
-              <BarChart data={chartData} margin={{ top: 4, right: 16, left: 0, bottom: 4 }}>
+              <LineChart data={chartData} margin={{ top: 8, right: 24, left: 0, bottom: 4 }}>
                 <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
                 <XAxis dataKey="year" tick={{ fontSize: 13 }} />
                 <YAxis
@@ -217,21 +228,48 @@ export const Costs = () => {
                 <Tooltip
                   formatter={(value: number) => [fmt(value), 'Total']}
                   contentStyle={{ borderRadius: '8px', fontSize: '13px' }}
+                  labelStyle={{ fontWeight: 600 }}
                 />
-                <Bar dataKey="total" radius={[6, 6, 0, 0]}>
-                  {chartData.map((entry) => (
-                    <Cell
-                      key={entry.year}
-                      fill={entry.year === '2026' ? BAR_COLOR_PARTIAL : entry.year === '2025' ? BAR_COLOR_ACTIVE : BAR_COLOR_MUTED}
-                    />
-                  ))}
-                </Bar>
-              </BarChart>
+                <ReferenceLine
+                  x="2026"
+                  stroke={BAR_COLOR_PARTIAL}
+                  strokeDasharray="4 3"
+                  label={{ value: 'partiel', position: 'insideTopRight', fontSize: 10, fill: BAR_COLOR_PARTIAL }}
+                />
+                <Line
+                  type="monotone"
+                  dataKey="total"
+                  stroke={BAR_COLOR_ACTIVE}
+                  strokeWidth={2.5}
+                  dot={(props) => {
+                    const { cx, cy, payload } = props;
+                    const isPartial = payload.year === '2026';
+                    return (
+                      <Dot
+                        key={payload.year}
+                        cx={cx}
+                        cy={cy}
+                        r={5}
+                        fill={isPartial ? BAR_COLOR_PARTIAL : BAR_COLOR_ACTIVE}
+                        stroke="#fff"
+                        strokeWidth={2}
+                      />
+                    );
+                  }}
+                  activeDot={{ r: 7, strokeWidth: 2, stroke: '#fff' }}
+                />
+              </LineChart>
             </ResponsiveContainer>
           </ChartContainer>
-          <div className="flex items-center gap-2 mt-2 text-xs text-muted-foreground">
-            <span className="inline-block w-3 h-3 rounded-sm" style={{ background: BAR_COLOR_PARTIAL }} />
-            2026 — données partielles (jan. – mars)
+          <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
+            <span className="flex items-center gap-1.5">
+              <span className="inline-block w-6 h-0.5 rounded" style={{ background: BAR_COLOR_ACTIVE }} />
+              Dépenses annuelles
+            </span>
+            <span className="flex items-center gap-1.5">
+              <span className="inline-block w-4 h-0.5 rounded border-t-2 border-dashed" style={{ borderColor: BAR_COLOR_PARTIAL }} />
+              2026 — partiel
+            </span>
           </div>
         </CardContent>
       </Card>
